@@ -5,6 +5,11 @@ export const Route = createFileRoute("/api/public/webhooks/telegram/$slug")({
     handlers: {
       POST: async ({ request, params }) => {
         try {
+          const expected = process.env.TELEGRAM_WEBHOOK_SECRET;
+          const provided = request.headers.get("x-telegram-bot-api-secret-token");
+          if (!expected || provided !== expected) {
+            return Response.json({ ok: false }, { status: 401 });
+          }
           const body = await request.json();
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { data: link } = await supabaseAdmin
