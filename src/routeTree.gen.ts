@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RSlugRouteImport } from './routes/r.$slug'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedSettingsBotsRouteImport } from './routes/_authenticated/settings.bots'
 import { Route as AuthenticatedLinksNewRouteImport } from './routes/_authenticated/links.new'
 import { Route as AuthenticatedLinksSlugRouteImport } from './routes/_authenticated/links.$slug'
 import { Route as ApiPublicWebhooksTelegramSlugRouteImport } from './routes/api/public/webhooks/telegram.$slug'
@@ -49,6 +50,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSettingsBotsRoute =
+  AuthenticatedSettingsBotsRouteImport.update({
+    id: '/settings/bots',
+    path: '/settings/bots',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLinksNewRoute = AuthenticatedLinksNewRouteImport.update({
   id: '/links/new',
   path: '/links/new',
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/r/$slug': typeof RSlugRoute
   '/links/$slug': typeof AuthenticatedLinksSlugRoute
   '/links/new': typeof AuthenticatedLinksNewRoute
+  '/settings/bots': typeof AuthenticatedSettingsBotsRoute
   '/api/public/webhooks/discord/$slug': typeof ApiPublicWebhooksDiscordSlugRoute
   '/api/public/webhooks/telegram/$slug': typeof ApiPublicWebhooksTelegramSlugRoute
 }
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
   '/r/$slug': typeof RSlugRoute
   '/links/$slug': typeof AuthenticatedLinksSlugRoute
   '/links/new': typeof AuthenticatedLinksNewRoute
+  '/settings/bots': typeof AuthenticatedSettingsBotsRoute
   '/api/public/webhooks/discord/$slug': typeof ApiPublicWebhooksDiscordSlugRoute
   '/api/public/webhooks/telegram/$slug': typeof ApiPublicWebhooksTelegramSlugRoute
 }
@@ -104,6 +113,7 @@ export interface FileRoutesById {
   '/r/$slug': typeof RSlugRoute
   '/_authenticated/links/$slug': typeof AuthenticatedLinksSlugRoute
   '/_authenticated/links/new': typeof AuthenticatedLinksNewRoute
+  '/_authenticated/settings/bots': typeof AuthenticatedSettingsBotsRoute
   '/api/public/webhooks/discord/$slug': typeof ApiPublicWebhooksDiscordSlugRoute
   '/api/public/webhooks/telegram/$slug': typeof ApiPublicWebhooksTelegramSlugRoute
 }
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/r/$slug'
     | '/links/$slug'
     | '/links/new'
+    | '/settings/bots'
     | '/api/public/webhooks/discord/$slug'
     | '/api/public/webhooks/telegram/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/r/$slug'
     | '/links/$slug'
     | '/links/new'
+    | '/settings/bots'
     | '/api/public/webhooks/discord/$slug'
     | '/api/public/webhooks/telegram/$slug'
   id:
@@ -140,6 +152,7 @@ export interface FileRouteTypes {
     | '/r/$slug'
     | '/_authenticated/links/$slug'
     | '/_authenticated/links/new'
+    | '/_authenticated/settings/bots'
     | '/api/public/webhooks/discord/$slug'
     | '/api/public/webhooks/telegram/$slug'
   fileRoutesById: FileRoutesById
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/bots': {
+      id: '/_authenticated/settings/bots'
+      path: '/settings/bots'
+      fullPath: '/settings/bots'
+      preLoaderRoute: typeof AuthenticatedSettingsBotsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/links/new': {
       id: '/_authenticated/links/new'
       path: '/links/new'
@@ -233,6 +253,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedLinksSlugRoute: typeof AuthenticatedLinksSlugRoute
   AuthenticatedLinksNewRoute: typeof AuthenticatedLinksNewRoute
+  AuthenticatedSettingsBotsRoute: typeof AuthenticatedSettingsBotsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -240,6 +261,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedLinksSlugRoute: AuthenticatedLinksSlugRoute,
   AuthenticatedLinksNewRoute: AuthenticatedLinksNewRoute,
+  AuthenticatedSettingsBotsRoute: AuthenticatedSettingsBotsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
