@@ -14,16 +14,161 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clicks: {
+        Row: {
+          id: string
+          ip_hash: string | null
+          link_id: string
+          referrer: string | null
+          timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          id?: string
+          ip_hash?: string | null
+          link_id: string
+          referrer?: string | null
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          id?: string
+          ip_hash?: string | null
+          link_id?: string
+          referrer?: string | null
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clicks_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_joins: {
+        Row: {
+          id: string
+          link_id: string
+          platform: Database["public"]["Enums"]["link_platform"]
+          platform_user_id: string | null
+          timestamp: string
+        }
+        Insert: {
+          id?: string
+          link_id: string
+          platform: Database["public"]["Enums"]["link_platform"]
+          platform_user_id?: string | null
+          timestamp?: string
+        }
+        Update: {
+          id?: string
+          link_id?: string
+          platform?: Database["public"]["Enums"]["link_platform"]
+          platform_user_id?: string | null
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_joins_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      links: {
+        Row: {
+          criado_em: string
+          destino_url: string
+          id: string
+          nome: string
+          plataforma: Database["public"]["Enums"]["link_platform"]
+          slug: string
+          user_id: string
+        }
+        Insert: {
+          criado_em?: string
+          destino_url: string
+          id?: string
+          nome: string
+          plataforma: Database["public"]["Enums"]["link_platform"]
+          slug: string
+          user_id: string
+        }
+        Update: {
+          criado_em?: string
+          destino_url?: string
+          id?: string
+          nome?: string
+          plataforma?: Database["public"]["Enums"]["link_platform"]
+          slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          ativo: boolean
+          criado_em: string
+          email: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          criado_em?: string
+          email: string
+          id: string
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          criado_em?: string
+          email?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "funcionario"
+      link_platform: "telegram" | "discord" | "whatsapp"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +295,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "funcionario"],
+      link_platform: ["telegram", "discord", "whatsapp"],
+    },
   },
 } as const
