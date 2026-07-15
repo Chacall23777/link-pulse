@@ -5,6 +5,11 @@ export const Route = createFileRoute("/api/public/webhooks/discord/$slug")({
     handlers: {
       POST: async ({ request, params }) => {
         try {
+          const expected = process.env.DISCORD_WEBHOOK_SECRET;
+          const provided = request.headers.get("x-webhook-secret");
+          if (!expected || provided !== expected) {
+            return Response.json({ ok: false }, { status: 401 });
+          }
           const body = await request.json();
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { data: link } = await supabaseAdmin
