@@ -1,38 +1,38 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import { customAlphabet } from "nanoid";
-
-const nano = customAlphabet("abcdefghijkmnpqrstuvwxyz23456789", 6);
 
 const createLinkSchema = z.object({
   nome: z.string().trim().min(1).max(120),
   destino_url: z.string().trim().url().max(2000),
-  plataforma: z.enum(["telegram", "discord", "whatsapp"]),
+  plataforma: z.enum(["telegram", "discord", "whatsapp", "x", "instagram"]),
+  slug_prefixo: z.string().trim().toLowerCase().min(3).max(30)
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Use apenas letras minúsculas, números e hífen"),
 });
 
 export const createLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => createLinkSchema.parse(d))
   .handler(async ({ data, context }) => {
-    // Retry up to 5 times on slug collision
-    for (let i = 0; i < 5; i++) {
-      const slug = `${nano()}-web3brasil`;
-      const { data: row, error } = await context.supabase
-        .from("links")
-        .insert({
-          user_id: context.userId,
-          slug,
-          destino_url: data.destino_url,
-          nome: data.nome,
-          plataforma: data.plataforma,
-        })
-        .select()
-        .single();
-      if (!error && row) return row;
-      if (error && !error.message.includes("duplicate")) throw new Error(error.message);
+    const slug = `${data.slug_prefixo}-web3brasil`;
+    const { data: row, error } = await context.supabase
+      .from("links")
+      .insert({
+        user_id: context.userId,
+        slug,
+        destino_url: data.destino_url,
+        nome: data.nome,
+        plataforma: data.plataforma,
+      })
+      .select()
+      .single();
+    if (error) {
+      if (error.message.includes("duplicate")) {
+        throw new Error("Esse link já está em uso, escolha outro texto");
+      }
+      throw new Error(error.message);
     }
-    throw new Error("Não foi possível gerar slug único");
+    return row;
   });
 
 export const listLinks = createServerFn({ method: "GET" })
@@ -44,7 +44,6 @@ export const listLinks = createServerFn({ method: "GET" })
       .order("criado_em", { ascending: false });
     if (error) throw new Error(error.message);
 
-    // Fetch click counts
     const linkIds = (data ?? []).map((l) => l.id);
     let clickCounts: Record<string, number> = {};
     let joinCounts: Record<string, number> = {};
@@ -97,7 +96,6 @@ export const getLinkAnalytics = createServerFn({ method: "GET" })
     const clicksArr = clicks ?? [];
     const uniqueIps = new Set(clicksArr.map((c) => c.ip_hash).filter(Boolean));
 
-    // Group by day
     const byDay: Record<string, number> = {};
     for (const c of clicksArr) {
       const day = new Date(c.timestamp).toISOString().slice(0, 10);
@@ -105,7 +103,6 @@ export const getLinkAnalytics = createServerFn({ method: "GET" })
     }
     const daily = Object.entries(byDay).map(([date, count]) => ({ date, count })).sort((a, b) => a.date.localeCompare(b.date));
 
-    // Referrers
     const refCounts: Record<string, number> = {};
     for (const c of clicksArr) {
       const r = c.referrer || "Direto";
