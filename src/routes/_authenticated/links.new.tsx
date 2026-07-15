@@ -11,23 +11,39 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/links/new")({
-  head: () => ({ meta: [{ title: "Novo link — Web3Brasil Links" }] }),
+  head: () => ({ meta: [{ title: "Novo link — web3brasillinks" }] }),
   component: NewLink,
 });
+
+function sanitizeSlugPrefix(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
 
 function NewLink() {
   const navigate = useNavigate();
   const create = useServerFn(createLink);
   const [nome, setNome] = useState("");
   const [url, setUrl] = useState("");
-  const [plataforma, setPlataforma] = useState<"telegram" | "discord" | "whatsapp">("telegram");
+  const [slugPrefixo, setSlugPrefixo] = useState("");
+  const [plataforma, setPlataforma] = useState<"telegram" | "discord" | "whatsapp" | "x" | "instagram">("telegram");
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (slugPrefixo.length < 3) {
+      toast.error("O texto do link precisa ter pelo menos 3 caracteres");
+      return;
+    }
     setLoading(true);
     try {
-      const link = await create({ data: { nome, destino_url: url, plataforma } });
+      const link = await create({ data: { nome, destino_url: url, plataforma, slug_prefixo: slugPrefixo } });
       toast.success("Link criado!");
       navigate({ to: "/links/$slug", params: { slug: link.slug } });
     } catch (err: any) {
@@ -59,6 +75,17 @@ function NewLink() {
                 placeholder="https://t.me/..." />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="slug">Texto do link</Label>
+              <Input id="slug" required minLength={3} maxLength={30} value={slugPrefixo}
+                onChange={(e) => setSlugPrefixo(sanitizeSlugPrefix(e.target.value))}
+                placeholder="Ex: chacal" />
+              <p className="text-xs text-muted-foreground">
+                Link final: <span className="text-primary font-mono">
+                  {slugPrefixo || "seutexto"}-web3brasil
+                </span>
+              </p>
+            </div>
+            <div className="space-y-2">
               <Label>Plataforma</Label>
               <Select value={plataforma} onValueChange={(v: any) => setPlataforma(v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -66,6 +93,8 @@ function NewLink() {
                   <SelectItem value="telegram">Telegram</SelectItem>
                   <SelectItem value="discord">Discord</SelectItem>
                   <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                  <SelectItem value="x">X (Twitter)</SelectItem>
+                  <SelectItem value="instagram">Instagram</SelectItem>
                 </SelectContent>
               </Select>
             </div>
