@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RSlugRouteImport } from './routes/r.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedLinksNewRouteImport } from './routes/_authenticated/links.new'
 import { Route as ApiPublicWebhooksTelegramSlugRouteImport } from './routes/api/public/webhooks/telegram.$slug'
 import { Route as ApiPublicWebhooksDiscordSlugRouteImport } from './routes/api/public/webhooks/discord.$slug'
 
@@ -41,6 +42,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLinksNewRoute = AuthenticatedLinksNewRouteImport.update({
+  id: '/links/new',
+  path: '/links/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicWebhooksTelegramSlugRoute =
   ApiPublicWebhooksTelegramSlugRouteImport.update({
     id: '/api/public/webhooks/telegram/$slug',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/r/$slug': typeof RSlugRoute
+  '/links/new': typeof AuthenticatedLinksNewRoute
   '/api/public/webhooks/discord/$slug': typeof ApiPublicWebhooksDiscordSlugRoute
   '/api/public/webhooks/telegram/$slug': typeof ApiPublicWebhooksTelegramSlugRoute
 }
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/r/$slug': typeof RSlugRoute
+  '/links/new': typeof AuthenticatedLinksNewRoute
   '/api/public/webhooks/discord/$slug': typeof ApiPublicWebhooksDiscordSlugRoute
   '/api/public/webhooks/telegram/$slug': typeof ApiPublicWebhooksTelegramSlugRoute
 }
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/r/$slug': typeof RSlugRoute
+  '/_authenticated/links/new': typeof AuthenticatedLinksNewRoute
   '/api/public/webhooks/discord/$slug': typeof ApiPublicWebhooksDiscordSlugRoute
   '/api/public/webhooks/telegram/$slug': typeof ApiPublicWebhooksTelegramSlugRoute
 }
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/r/$slug'
+    | '/links/new'
     | '/api/public/webhooks/discord/$slug'
     | '/api/public/webhooks/telegram/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/r/$slug'
+    | '/links/new'
     | '/api/public/webhooks/discord/$slug'
     | '/api/public/webhooks/telegram/$slug'
   id:
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/r/$slug'
+    | '/_authenticated/links/new'
     | '/api/public/webhooks/discord/$slug'
     | '/api/public/webhooks/telegram/$slug'
   fileRoutesById: FileRoutesById
@@ -154,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/links/new': {
+      id: '/_authenticated/links/new'
+      path: '/links/new'
+      fullPath: '/links/new'
+      preLoaderRoute: typeof AuthenticatedLinksNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/webhooks/telegram/$slug': {
       id: '/api/public/webhooks/telegram/$slug'
       path: '/api/public/webhooks/telegram/$slug'
@@ -173,10 +192,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedLinksNewRoute: typeof AuthenticatedLinksNewRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedLinksNewRoute: AuthenticatedLinksNewRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
