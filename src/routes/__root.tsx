@@ -88,8 +88,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-title", content: "web3brasillinks" },
       { name: "twitter:title", content: "web3brasillinks — encurtador com analytics de grupos" },
       { name: "twitter:description", content: "Encurtador de links com analytics de cliques e rastreamento de entradas em grupos de Telegram, Discord, WhatsApp, X e Instagram." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9893ddb7-2b79-48dc-a45d-1a7a1982a097/id-preview-aef13234--480e3dc0-d4b1-4fad-963a-35f9658d5b38.lovable.app-1784156852832.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9893ddb7-2b79-48dc-a45d-1a7a1982a097/id-preview-aef13234--480e3dc0-d4b1-4fad-963a-35f9658d5b38.lovable.app-1784156852832.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/EXtaR3iy8nfSHz71pHypSiP0C7G3/social-images/social-1784158692568-Captura_de_tela_2026-07-01_110658.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/EXtaR3iy8nfSHz71pHypSiP0C7G3/social-images/social-1784158692568-Captura_de_tela_2026-07-01_110658.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
