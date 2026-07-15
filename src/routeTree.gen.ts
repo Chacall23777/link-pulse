@@ -10,9 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as RSlugRouteImport } from './routes/r.$slug'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSettingsBotsRouteImport } from './routes/_authenticated/settings.bots'
@@ -26,6 +27,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -35,9 +41,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SlugRoute = SlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
+const RSlugRoute = RSlugRouteImport.update({
+  id: '/r/$slug',
+  path: '/r/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
@@ -81,10 +87,11 @@ const ApiPublicWebhooksDiscordSlugRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/team': typeof AuthenticatedTeamRoute
-  '/$slug': typeof SlugRoute
+  '/r/$slug': typeof RSlugRoute
   '/links/$slug': typeof AuthenticatedLinksSlugRoute
   '/links/new': typeof AuthenticatedLinksNewRoute
   '/settings/bots': typeof AuthenticatedSettingsBotsRoute
@@ -93,10 +100,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/team': typeof AuthenticatedTeamRoute
-  '/$slug': typeof SlugRoute
+  '/r/$slug': typeof RSlugRoute
   '/links/$slug': typeof AuthenticatedLinksSlugRoute
   '/links/new': typeof AuthenticatedLinksNewRoute
   '/settings/bots': typeof AuthenticatedSettingsBotsRoute
@@ -107,10 +115,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$slug': typeof SlugRoute
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
-  '/$slug': typeof SlugRoute
+  '/r/$slug': typeof RSlugRoute
   '/_authenticated/links/$slug': typeof AuthenticatedLinksSlugRoute
   '/_authenticated/links/new': typeof AuthenticatedLinksNewRoute
   '/_authenticated/settings/bots': typeof AuthenticatedSettingsBotsRoute
@@ -121,10 +130,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$slug'
     | '/auth'
     | '/dashboard'
     | '/team'
-    | '/$slug'
+    | '/r/$slug'
     | '/links/$slug'
     | '/links/new'
     | '/settings/bots'
@@ -133,10 +143,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$slug'
     | '/auth'
     | '/dashboard'
     | '/team'
-    | '/$slug'
+    | '/r/$slug'
     | '/links/$slug'
     | '/links/new'
     | '/settings/bots'
@@ -146,23 +157,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/$slug'
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/team'
-    | '/$slug'
-    | '/_authenticated/links/$slug'
-    | '/_authenticated/links/new'
-    | '/_authenticated/settings/bots'
-    | '/api/public/webhooks/discord/$slug'
-    | '/api/public/webhooks/telegram/$slug'
-  id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/team'
-    | '/$slug'
+    | '/r/$slug'
     | '/_authenticated/links/$slug'
     | '/_authenticated/links/new'
     | '/_authenticated/settings/bots'
@@ -173,38 +172,130 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-[end name=repository-3]
- 
+  SlugRoute: typeof SlugRoute
+  AuthRoute: typeof AuthRoute
+  RSlugRoute: typeof RSlugRoute
+  ApiPublicWebhooksDiscordSlugRoute: typeof ApiPublicWebhooksDiscordSlugRoute
+  ApiPublicWebhooksTelegramSlugRoute: typeof ApiPublicWebhooksTelegramSlugRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/r/$slug': {
+      id: '/r/$slug'
+      path: '/r/$slug'
+      fullPath: '/r/$slug'
+      preLoaderRoute: typeof RSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/team': {
+      id: '/_authenticated/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AuthenticatedTeamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/bots': {
+      id: '/_authenticated/settings/bots'
+      path: '/settings/bots'
+      fullPath: '/settings/bots'
+      preLoaderRoute: typeof AuthenticatedSettingsBotsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/links/new': {
+      id: '/_authenticated/links/new'
+      path: '/links/new'
+      fullPath: '/links/new'
+      preLoaderRoute: typeof AuthenticatedLinksNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/links/$slug': {
+      id: '/_authenticated/links/$slug'
+      path: '/links/$slug'
+      fullPath: '/links/$slug'
+      preLoaderRoute: typeof AuthenticatedLinksSlugRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/webhooks/telegram/$slug': {
+      id: '/api/public/webhooks/telegram/$slug'
+      path: '/api/public/webhooks/telegram/$slug'
+      fullPath: '/api/public/webhooks/telegram/$slug'
+      preLoaderRoute: typeof ApiPublicWebhooksTelegramSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/discord/$slug': {
+      id: '/api/public/webhooks/discord/$slug'
+      path: '/api/public/webhooks/discord/$slug'
+      fullPath: '/api/public/webhooks/discord/$slug'
+      preLoaderRoute: typeof ApiPublicWebhooksDiscordSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
+}
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
+  AuthenticatedLinksSlugRoute: typeof AuthenticatedLinksSlugRoute
+  AuthenticatedLinksNewRoute: typeof AuthenticatedLinksNewRoute
+  AuthenticatedSettingsBotsRoute: typeof AuthenticatedSettingsBotsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedTeamRoute: AuthenticatedTeamRoute,
+  AuthenticatedLinksSlugRoute: AuthenticatedLinksSlugRoute,
+  AuthenticatedLinksNewRoute: AuthenticatedLinksNewRoute,
+  AuthenticatedSettingsBotsRoute: AuthenticatedSettingsBotsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  SlugRoute: SlugRoute,
+  AuthRoute: AuthRoute,
+  RSlugRoute: RSlugRoute,
+  ApiPublicWebhooksDiscordSlugRoute: ApiPublicWebhooksDiscordSlugRoute,
+  ApiPublicWebhooksTelegramSlugRoute: ApiPublicWebhooksTelegramSlugRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
