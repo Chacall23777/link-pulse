@@ -30,7 +30,8 @@ export const createLink = createServerFn({ method: "POST" })
       if (error.message.includes("duplicate")) {
         throw new Error("Esse link já está em uso, escolha outro texto");
       }
-      throw new Error(error.message);
+      console.error("createLink error", error);
+      throw new Error("Não foi possível criar o link");
     }
     return row;
   });
@@ -42,7 +43,10 @@ export const listLinks = createServerFn({ method: "GET" })
       .from("links")
       .select("id, slug, nome, destino_url, plataforma, criado_em, user_id")
       .order("criado_em", { ascending: false });
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("listLinks error", error);
+      throw new Error("Não foi possível carregar os links");
+    }
 
     const linkIds = (data ?? []).map((l) => l.id);
     let clickCounts: Record<string, number> = {};
@@ -79,7 +83,10 @@ export const getLinkAnalytics = createServerFn({ method: "GET" })
       .select("*")
       .eq("slug", data.slug)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("getLinkAnalytics error", error);
+      throw new Error("Não foi possível carregar as métricas");
+    }
     if (!link) throw new Error("Link não encontrado");
 
     const { data: clicks } = await context.supabase
@@ -127,7 +134,10 @@ export const deleteLink = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("links").delete().eq("id", data.id);
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("deleteLink error", error);
+      throw new Error("Não foi possível excluir o link");
+    }
     return { ok: true };
   });
 
