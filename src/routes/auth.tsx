@@ -50,7 +50,7 @@ function AuthPage() {
       <Card className="w-full max-w-md p-8">
         <div className="flex items-center gap-2 mb-6">
           <Link2 className="h-6 w-6 text-primary" />
-          <h1 ...>web3brasillinks</h1>
+          <h1 className="text-xl font-semibold">web3brasillinks</h1>
         </div>
         <div className="flex gap-2 mb-6 text-sm">
           <button type="button"
