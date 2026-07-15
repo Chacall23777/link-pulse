@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Link2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Entrar — Web3Brasil Links" }] }),
+  head: () => ({ meta: [{ title: "Entrar — web3brasillinks" }] }),
   component: AuthPage,
 });
 
@@ -50,7 +50,7 @@ function AuthPage() {
       <Card className="w-full max-w-md p-8">
         <div className="flex items-center gap-2 mb-6">
           <Link2 className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-semibold">Web3Brasil Links</h1>
+          <h1 ...>web3brasillinks</h1>
         </div>
         <div className="flex gap-2 mb-6 text-sm">
           <button type="button"
