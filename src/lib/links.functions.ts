@@ -5,7 +5,7 @@ import { z } from "zod";
 const createLinkSchema = z.object({
   nome: z.string().trim().min(1).max(120),
   destino_url: z.string().trim().url().max(2000),
-  plataforma: z.enum(["telegram", "discord", "whatsapp", "x", "instagram"]),
+  plataforma: z.enum(["telegram", "discord", "whatsapp"]),
   slug_prefixo: z.string().trim().toLowerCase().min(3).max(30)
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Use apenas letras minúsculas, números e hífen"),
 });
