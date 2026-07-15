@@ -1,0 +1,12 @@
+{
+  "name": "web3brasillinks",
+  "short_name": "web3brasillinks",
+  "description": "Encurtador de links com analytics de cliques e entradas em grupos",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "48x48", "type": "image/x-icon" }
+  ]
+}
