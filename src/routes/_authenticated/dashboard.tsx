@@ -114,7 +114,7 @@ function Dashboard() {
                     <tr key={l.id} className="border-t border-border hover:bg-muted/20">
                       <td className="px-4 py-3 font-medium">{l.nome}</td>
                       <td className="px-4 py-3 font-mono text-xs">
-                        
+                        <a
                           href={`/${l.slug}`}
                           target="_blank"
                           rel="noreferrer"
