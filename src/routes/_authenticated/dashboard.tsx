@@ -1,4 +1,3 @@
-
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -115,13 +114,13 @@ function Dashboard() {
                     <tr key={l.id} className="border-t border-border hover:bg-muted/20">
                       <td className="px-4 py-3 font-medium">{l.nome}</td>
                       <td className="px-4 py-3 font-mono text-xs">
-                        <a
+                        
                           href={`/${l.slug}`}
                           target="_blank"
                           rel="noreferrer"
                           className="text-primary hover:underline"
                         >
-                          /{l.slug}
+                          {typeof window !== "undefined" ? window.location.origin : ""}/{l.slug}
                         </a>
                       </td>
                       <td className="px-4 py-3"><Badge variant="secondary">{l.plataforma}</Badge></td>
@@ -168,3 +167,4 @@ function StatCard({ label, value }: { label: string; value: number }) {
     </Card>
   );
 }
+
