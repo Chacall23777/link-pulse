@@ -153,3 +153,15 @@ export const getMyRole = createServerFn({ method: "GET" })
       profile,
     };
   });
+export const getMyRole = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: roles } = await context.supabase
+      .from("user_roles").select("role").eq("user_id", context.userId);
+    const { data: profile } = await context.supabase
+      .from("profiles").select("nome, email, ativo").eq("id", context.userId).maybeSingle();
+    return {
+      isAdmin: (roles ?? []).some((r) => r.role === "admin"),
+      profile,
+    };
+  });
