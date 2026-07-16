@@ -150,6 +150,7 @@ export const getMyRole = createServerFn({ method: "GET" })
       .from("profiles").select("nome, email, ativo").eq("id", context.userId).maybeSingle();
     return {
       isAdmin: (roles ?? []).some((r) => r.role === "admin"),
+      userId: context.userId,
       profile,
     };
   });
