@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -43,7 +43,14 @@ function BotsSettings() {
           </ol>
           <div className="space-y-3 pt-2">
             {tgLinks.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Você ainda não tem links do Telegram.</p>
+              <div className="rounded-md border border-dashed border-border p-4 text-sm space-y-2">
+                <p className="text-muted-foreground">
+                  Você ainda não tem links do Telegram. Crie um link do tipo <strong>Telegram</strong> primeiro — depois volte aqui para colar o token do bot.
+                </p>
+                <Button asChild size="sm">
+                  <Link to="/links/new">Criar link do Telegram</Link>
+                </Button>
+              </div>
             ) : (
               tgLinks.map((l) => <TelegramLinkRow key={l.id} link={l} />)
             )}
