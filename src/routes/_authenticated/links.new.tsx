@@ -43,9 +43,17 @@ function NewLink() {
     }
     setLoading(true);
     try {
-      const link = await create({ data: { nome, destino_url: url, plataforma, slug_prefixo: slugPrefixo } });
+      const res = await create({ data: { nome, destino_url: url, plataforma, slug_prefixo: slugPrefixo } });
+      if (!res.ok) {
+        toast.error(
+          res.reason === "slug_taken"
+            ? "Esse link já está em uso, escolha outro texto"
+            : "Não foi possível criar o link"
+        );
+        return;
+      }
       toast.success("Link criado!");
-      navigate({ to: "/links/$slug", params: { slug: link.slug } });
+      navigate({ to: "/links/$slug", params: { slug: res.link.slug } });
     } catch (err: any) {
       toast.error(err.message || "Erro ao criar link");
     } finally {
