@@ -1,3 +1,4 @@
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -167,4 +168,3 @@ function StatCard({ label, value }: { label: string; value: number }) {
     </Card>
   );
 }
-
