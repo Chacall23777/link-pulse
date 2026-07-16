@@ -47,6 +47,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, []);
 
   async function handleInstall() {
+    setMenuOpen(false);
     if (installPrompt) {
       installPrompt.prompt();
       const { outcome } = await installPrompt.userChoice;
