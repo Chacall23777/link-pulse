@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 const telegramSchema = z.object({
@@ -42,9 +43,15 @@ export const connectTelegramBot = createServerFn({ method: "POST" })
     if (link.plataforma !== "telegram") throw new Error("Este link não é do Telegram");
 
     const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
-    const base = process.env.PUBLIC_APP_URL || process.env.SITE_URL;
     if (!secret) throw new Error("Servidor sem TELEGRAM_WEBHOOK_SECRET configurado");
-    if (!base) throw new Error("Servidor sem PUBLIC_APP_URL configurado");
+    const host = getRequestHeader("x-forwarded-host") || getRequestHeader("host");
+    const proto = getRequestHeader("x-forwarded-proto") || "https";
+    if (!host) throw new Error("Não foi possível determinar a URL pública");
+    const base = `${proto}://${host}`;
+    // O Telegram exige URL pública HTTPS — recuse localhost
+    if (/localhost|127\.0\.0\.1/.test(host)) {
+      throw new Error("Publique o app primeiro — o Telegram exige uma URL pública HTTPS");
+    }
 
     const webhookUrl = `${base.replace(/\/$/, "")}/api/public/webhooks/telegram/${link.slug}`;
 
