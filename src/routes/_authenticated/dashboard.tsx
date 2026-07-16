@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listLinks, getMyRole } from "@/lib/links.functions";
+import { listLinks, getMyRole, deleteLink } from "@/lib/links.functions";
 import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Copy, ExternalLink, BarChart3 } from "lucide-react";
+import { Copy, ExternalLink, BarChart3, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
 import {
@@ -19,8 +19,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
+  const queryClient = useQueryClient();
   const list = useServerFn(listLinks);
   const role = useServerFn(getMyRole);
+  const del = useServerFn(deleteLink);
   const { data: links = [] } = useQuery({ queryKey: ["links"], queryFn: () => list() });
   const { data: me } = useQuery({ queryKey: ["me"], queryFn: () => role() });
   const isAdmin = me?.isAdmin ?? false;
@@ -40,6 +42,17 @@ function Dashboard() {
     const url = `${window.location.origin}/${slug}`;
     navigator.clipboard.writeText(url);
     toast.success("Link copiado!");
+  }
+
+  async function handleDelete(id: string, nome: string) {
+    if (!window.confirm(`Excluir o link "${nome}"? Essa ação não pode ser desfeita.`)) return;
+    try {
+      await del({ data: { id } });
+      toast.success("Link excluído");
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao excluir link");
+    }
   }
 
   return (
@@ -95,31 +108,39 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((l) => (
-                  <tr key={l.id} className="border-t border-border hover:bg-muted/20">
-                    <td className="px-4 py-3 font-medium">{l.nome}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">/{l.slug}</td>
-                    <td className="px-4 py-3"><Badge variant="secondary">{l.plataforma}</Badge></td>
-                    {isAdmin && <td className="px-4 py-3 text-muted-foreground">{l.criador_nome}</td>}
-                    <td className="px-4 py-3 text-right tabular-nums">{l.total_clicks}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">
-                      {l.plataforma === "whatsapp" ? <span className="text-muted-foreground text-xs">— </span> : l.total_joins}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => copyUrl(l.slug)} title="Copiar">
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        <a href={`/${l.slug}`} target="_blank" rel="noreferrer">
-                          <Button size="sm" variant="ghost" title="Abrir"><ExternalLink className="h-4 w-4" /></Button>
-                        </a>
-                        <Link to="/links/$slug" params={{ slug: l.slug }}>
-                          <Button size="sm" variant="ghost" title="Analytics"><BarChart3 className="h-4 w-4" /></Button>
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {filtered.map((l) => {
+                  const canDelete = isAdmin || l.user_id === me?.userId;
+                  return (
+                    <tr key={l.id} className="border-t border-border hover:bg-muted/20">
+                      <td className="px-4 py-3 font-medium">{l.nome}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">/{l.slug}</td>
+                      <td className="px-4 py-3"><Badge variant="secondary">{l.plataforma}</Badge></td>
+                      {isAdmin && <td className="px-4 py-3 text-muted-foreground">{l.criador_nome}</td>}
+                      <td className="px-4 py-3 text-right tabular-nums">{l.total_clicks}</td>
+                      <td className="px-4 py-3 text-right tabular-nums">
+                        {l.plataforma === "whatsapp" ? <span className="text-muted-foreground text-xs">— </span> : l.total_joins}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button size="sm" variant="ghost" onClick={() => copyUrl(l.slug)} title="Copiar">
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                          <a href={`/${l.slug}`} target="_blank" rel="noreferrer">
+                            <Button size="sm" variant="ghost" title="Abrir"><ExternalLink className="h-4 w-4" /></Button>
+                          </a>
+                          <Link to="/links/$slug" params={{ slug: l.slug }}>
+                            <Button size="sm" variant="ghost" title="Analytics"><BarChart3 className="h-4 w-4" /></Button>
+                          </Link>
+                          {canDelete && (
+                            <Button size="sm" variant="ghost" onClick={() => handleDelete(l.id, l.nome)} title="Excluir">
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
@@ -137,3 +158,4 @@ function StatCard({ label, value }: { label: string; value: number }) {
     </Card>
   );
 }
+
