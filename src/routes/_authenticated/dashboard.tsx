@@ -107,7 +107,7 @@ function Dashboard() {
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="min-w-0">
                         <div className="font-medium truncate">{l.nome}</div>
-                        
+                        <a
                           href={`/${l.slug}`}
                           target="_blank"
                           rel="noreferrer"
@@ -174,7 +174,7 @@ function Dashboard() {
                       <tr key={l.id} className="border-t border-border hover:bg-muted/20">
                         <td className="px-4 py-3 font-medium">{l.nome}</td>
                         <td className="px-4 py-3 font-mono text-xs">
-                          
+                          <a
                             href={`/${l.slug}`}
                             target="_blank"
                             rel="noreferrer"
