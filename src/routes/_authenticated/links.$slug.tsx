@@ -36,6 +36,7 @@ function LinkAnalytics() {
   const isWhats = data.link.plataforma === "whatsapp";
 
   async function handleDelete() {
+    if (!data) return;
     if (!window.confirm(`Excluir o link "${data.link.nome}"? Essa ação não pode ser desfeita.`)) return;
     try {
       await del({ data: { id: data.link.id } });
