@@ -28,12 +28,12 @@ export const createLink = createServerFn({ method: "POST" })
       .single();
     if (error) {
       if (error.message.includes("duplicate")) {
-        throw new Error("Esse link já está em uso, escolha outro texto");
+        return { ok: false as const, reason: "slug_taken" as const };
       }
       console.error("createLink error", error);
-      throw new Error("Não foi possível criar o link");
+      return { ok: false as const, reason: "unknown" as const };
     }
-    return row;
+    return { ok: true as const, link: row };
   });
 
 export const listLinks = createServerFn({ method: "GET" })
