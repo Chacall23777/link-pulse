@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Web3Brasil Links" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — web3brasillinks" }] }),
   component: Dashboard,
 });
 
@@ -37,7 +37,7 @@ function Dashboard() {
   const totalJoins = filtered.reduce((s, l) => s + l.total_joins, 0);
 
   function copyUrl(slug: string) {
-    const url = `${window.location.origin}/r/${slug}`;
+    const url = `${window.location.origin}/${slug}`;
     navigator.clipboard.writeText(url);
     toast.success("Link copiado!");
   }
@@ -98,7 +98,7 @@ function Dashboard() {
                 {filtered.map((l) => (
                   <tr key={l.id} className="border-t border-border hover:bg-muted/20">
                     <td className="px-4 py-3 font-medium">{l.nome}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">/r/{l.slug}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">/{l.slug}</td>
                     <td className="px-4 py-3"><Badge variant="secondary">{l.plataforma}</Badge></td>
                     {isAdmin && <td className="px-4 py-3 text-muted-foreground">{l.criador_nome}</td>}
                     <td className="px-4 py-3 text-right tabular-nums">{l.total_clicks}</td>
@@ -110,7 +110,7 @@ function Dashboard() {
                         <Button size="sm" variant="ghost" onClick={() => copyUrl(l.slug)} title="Copiar">
                           <Copy className="h-4 w-4" />
                         </Button>
-                        <a href={`/r/${l.slug}`} target="_blank" rel="noreferrer">
+                        <a href={`/${l.slug}`} target="_blank" rel="noreferrer">
                           <Button size="sm" variant="ghost" title="Abrir"><ExternalLink className="h-4 w-4" /></Button>
                         </a>
                         <Link to="/links/$slug" params={{ slug: l.slug }}>
