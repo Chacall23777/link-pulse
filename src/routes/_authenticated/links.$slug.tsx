@@ -13,7 +13,7 @@ import {
 } from "recharts";
 
 export const Route = createFileRoute("/_authenticated/links/$slug")({
-  head: () => ({ meta: [{ title: "Analytics — Web3Brasil Links" }] }),
+  head: () => ({ meta: [{ title: "Analytics — web3brasillinks" }] }),
   component: LinkAnalytics,
 });
 
@@ -29,7 +29,7 @@ function LinkAnalytics() {
   if (error) return <AppShell><div className="p-8 text-destructive">Erro: {(error as Error).message}</div></AppShell>;
   if (!data) return null;
 
-  const shortUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/r/${data.link.slug}`;
+  const shortUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${data.link.slug}`;
   const isWhats = data.link.plataforma === "whatsapp";
 
   return (
