@@ -20,12 +20,19 @@ export const Route = createFileRoute("/api/public/webhooks/telegram/$slug")({
           const message = body?.message;
           const newMembers = message?.new_chat_members;
           if (Array.isArray(newMembers) && newMembers.length > 0) {
-            const rows = newMembers.map((m: any) => ({
-              link_id: link.id,
-              platform: "telegram" as const,
-              platform_user_id: String(m.id ?? ""),
-            }));
-            await supabaseAdmin.from("group_joins").insert(rows);
+            const rows = newMembers
+              .filter((m: any) => m?.id && !m?.is_bot)
+              .map((m: any) => ({
+                link_id: link.id,
+                platform: "telegram" as const,
+                platform_user_id: String(m.id),
+              }));
+            if (rows.length) {
+              // Deduplica: só conta a primeira vez que a pessoa entra por este link
+              await supabaseAdmin
+                .from("group_joins")
+                .upsert(rows, { onConflict: "link_id,platform,platform_user_id", ignoreDuplicates: true });
+            }
           }
           return Response.json({ ok: true });
         } catch (e) {
