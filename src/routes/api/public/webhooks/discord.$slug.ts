@@ -19,11 +19,16 @@ export const Route = createFileRoute("/api/public/webhooks/discord/$slug")({
           }
           // Expected: { user_id: "..." } — bot posts on guildMemberAdd
           const userId = body?.user_id ?? body?.user?.id ?? null;
-          await supabaseAdmin.from("group_joins").insert({
-            link_id: link.id,
-            platform: "discord",
-            platform_user_id: userId ? String(userId) : null,
-          });
+          if (!userId) {
+            return Response.json({ ok: false, error: "user_id ausente" }, { status: 400 });
+          }
+          // Deduplica: só conta a primeira vez que a pessoa entra por este link
+          await supabaseAdmin
+            .from("group_joins")
+            .upsert(
+              { link_id: link.id, platform: "discord", platform_user_id: String(userId) },
+              { onConflict: "link_id,platform,platform_user_id", ignoreDuplicates: true },
+            );
           return Response.json({ ok: true });
         } catch (e) {
           console.error("discord webhook", e);
