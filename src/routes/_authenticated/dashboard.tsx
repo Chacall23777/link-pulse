@@ -89,7 +89,7 @@ function Dashboard() {
           </div>
         )}
 
-        <Card className="overflow-hidden">
+        <Card className="overflow-x-auto">
           {filtered.length === 0 ? (
             <div className="p-12 text-center text-muted-foreground">
               Nenhum link ainda. Crie o primeiro.
@@ -113,7 +113,16 @@ function Dashboard() {
                   return (
                     <tr key={l.id} className="border-t border-border hover:bg-muted/20">
                       <td className="px-4 py-3 font-medium">{l.nome}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">/{l.slug}</td>
+                      <td className="px-4 py-3 font-mono text-xs">
+                        
+                          href={`/${l.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          /{l.slug}
+                        </a>
+                      </td>
                       <td className="px-4 py-3"><Badge variant="secondary">{l.plataforma}</Badge></td>
                       {isAdmin && <td className="px-4 py-3 text-muted-foreground">{l.criador_nome}</td>}
                       <td className="px-4 py-3 text-right tabular-nums">{l.total_clicks}</td>
