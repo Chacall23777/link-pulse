@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getLinkAnalytics } from "@/lib/links.functions";
+import { getLinkAnalytics, deleteLink } from "@/lib/links.functions";
 import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import { Copy, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
@@ -19,7 +19,10 @@ export const Route = createFileRoute("/_authenticated/links/$slug")({
 
 function LinkAnalytics() {
   const { slug } = Route.useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fetchFn = useServerFn(getLinkAnalytics);
+  const del = useServerFn(deleteLink);
   const { data, isLoading, error } = useQuery({
     queryKey: ["analytics", slug],
     queryFn: () => fetchFn({ data: { slug } }),
@@ -32,22 +35,41 @@ function LinkAnalytics() {
   const shortUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${data.link.slug}`;
   const isWhats = data.link.plataforma === "whatsapp";
 
+  async function handleDelete() {
+    if (!window.confirm(`Excluir o link "${data.link.nome}"? Essa ação não pode ser desfeita.`)) return;
+    try {
+      await del({ data: { id: data.link.id } });
+      toast.success("Link excluído");
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      navigate({ to: "/dashboard" });
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao excluir link");
+    }
+  }
+
   return (
     <AppShell>
       <div className="p-8 max-w-6xl mx-auto space-y-6">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-semibold">{data.link.nome}</h1>
-            <Badge variant="secondary">{data.link.plataforma}</Badge>
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-2xl font-semibold">{data.link.nome}</h1>
+              <Badge variant="secondary">{data.link.plataforma}</Badge>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <code className="font-mono text-xs bg-muted px-2 py-1 rounded">{shortUrl}</code>
+              <Button size="sm" variant="ghost"
+                onClick={() => { navigator.clipboard.writeText(shortUrl); toast.success("Copiado!"); }}>
+                <Copy className="h-3 w-3" />
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">→ {data.link.destino_url}</p>
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <code className="font-mono text-xs bg-muted px-2 py-1 rounded">{shortUrl}</code>
-            <Button size="sm" variant="ghost"
-              onClick={() => { navigator.clipboard.writeText(shortUrl); toast.success("Copiado!"); }}>
-              <Copy className="h-3 w-3" />
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">→ {data.link.destino_url}</p>
+          <Button size="sm" variant="outline" onClick={handleDelete}
+            className="text-destructive border-destructive/30 hover:bg-destructive/10">
+            <Trash2 className="h-4 w-4 mr-1.5" />
+            Excluir link
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -112,3 +134,4 @@ function Stat({ label, value, hint }: { label: string; value: number; hint?: str
     </Card>
   );
 }
+
