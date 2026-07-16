@@ -45,7 +45,12 @@ export const createEmployee = createServerFn({ method: "POST" })
       email_confirm: true,
       user_metadata: { nome: data.nome },
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      const msg = /already been registered|already exists|duplicate/i.test(error.message)
+        ? "Já existe um usuário com este e-mail"
+        : error.message;
+      throw new Error(msg);
+    }
     const uid = userRes.user!.id;
     // Upsert profile (trigger may already have created it)
     await supabaseAdmin.from("profiles")
