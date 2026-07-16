@@ -19,22 +19,39 @@ export function AppShell({ children }: { children: ReactNode }) {
   const nome = data?.profile?.nome ?? "";
 
   const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     function onBeforeInstall(e: Event) {
       e.preventDefault();
       setInstallPrompt(e);
+      if (import.meta.env.DEV) console.log("[PWA] beforeinstallprompt captured");
     }
+    function onInstalled() {
+      setInstallPrompt(null);
+      setIsInstalled(true);
+      if (import.meta.env.DEV) console.log("[PWA] appinstalled");
+    }
+    const standalone =
+      window.matchMedia?.("(display-mode: standalone)").matches ||
+      // iOS Safari
+      (window.navigator as any).standalone === true;
+    if (standalone) setIsInstalled(true);
     window.addEventListener("beforeinstallprompt", onBeforeInstall);
-    return () => window.removeEventListener("beforeinstallprompt", onBeforeInstall);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
 
   async function handleInstall() {
     if (installPrompt) {
       installPrompt.prompt();
       const { outcome } = await installPrompt.userChoice;
-      if (outcome === "accepted") setInstallPrompt(null);
+      if (import.meta.env.DEV) console.log("[PWA] userChoice:", outcome);
+      setInstallPrompt(null);
       return;
     }
     const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
@@ -79,9 +96,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
       </nav>
       <div className="p-3 border-t border-sidebar-border space-y-1">
-        <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleInstall}>
-          <Download className="h-4 w-4 mr-2" /> Baixar app
-        </Button>
+        {!isInstalled && (
+          <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleInstall}>
+            <Download className="h-4 w-4 mr-2" /> Baixar app
+          </Button>
+        )}
         <div className="text-xs text-muted-foreground px-2 pt-2 pb-1 truncate">
           {nome} {isAdmin && <span className="text-primary">· admin</span>}
         </div>
